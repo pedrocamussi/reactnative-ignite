@@ -68,14 +68,21 @@ export function Register(){
         if(category.key === 'category')
             return Alert.alert('Selecione a categoria');
 
-        const data = {
+        const newTransaction = {
             name: form.name,
             amount: form.amount,
             transactionType,
             category: category.key
         }
         try {
-            await AsyncStorage.setItem(dataKey, JSON.stringify(data));
+            const data = await AsyncStorage.getItem(dataKey);
+            const currentData = data ? JSON.parse(data) : [];
+            
+            const dataFormatted = [
+                ...currentData,
+                newTransaction];
+
+            await AsyncStorage.setItem(dataKey, JSON.stringify(dataFormatted));
         } catch (error) {
             console.log(error);
             Alert.alert("Não foi possível salvar.")
@@ -84,11 +91,15 @@ export function Register(){
     }
 
     useEffect(()=>{
-        async function loadData(){
-            const data = await AsyncStorage.getItem(dataKey);
-            console.log(JSON.parse(data!));
-        }
+         async function loadData(){
+             const data = await AsyncStorage.getItem(dataKey);
+             console.log(JSON.parse(data!));
+         }
         loadData();
+        // async function removeAll(){
+        //     AsyncStorage.removeItem(dataKey);
+        // }
+        // removeAll()
     }, []);
 
     return(
