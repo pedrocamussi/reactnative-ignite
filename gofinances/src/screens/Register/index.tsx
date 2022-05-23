@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {Keyboard, Modal, TouchableWithoutFeedback, Alert } from 'react-native';
 import * as Yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
 
 import {useNavigation} from '@react-navigation/native'
@@ -21,7 +21,6 @@ interface FormData{
     name: string;
     amount: string;
 }
-const dataKey = '@gofinances:transactions';
 const schema = Yup.object().shape({
     name: Yup
         .string()
@@ -81,6 +80,8 @@ export function Register(){
             date: new Date()
         }
         try {
+            const dataKey = '@gofinances:transactions';
+
             const data = await AsyncStorage.getItem(dataKey);
             const currentData = data ? JSON.parse(data) : [];
             
