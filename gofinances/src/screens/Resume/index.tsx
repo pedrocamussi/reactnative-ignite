@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
 import {VictoryPie} from 'victory-native';
 import { RFValue } from "react-native-responsive-fontsize";
-
+import {addMonths} from 'date-fns';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 
 import {useTheme} from 'styled-components';
@@ -22,6 +21,7 @@ import {
     Month
 } from './styles';
 import { categories } from "../../utils/categories";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 
 interface TransactionData{
@@ -43,10 +43,20 @@ interface CategoryData {
 
 
 export function Resume(){
-
+    const [selectedDate, setSelectedDate] = useState(new Date());
     const [totalByCategories, setTotalByCategories] = useState<CategoryData[]>([])
 
     const theme = useTheme();
+
+    function handleDateChange(action: 'next' | 'prev'){
+        if(action === 'next'){
+            const newDate = addMonths(selectedDate, 1);
+            setSelectedDate(newDate);
+            console.log(newDate);
+        }  else {
+
+        }
+    }
 
     async function loadData (){
         const dataKey = '@gofinances:transactions';
@@ -101,6 +111,7 @@ export function Resume(){
     }, []);
      
     return(
+        <GestureHandlerRootView style={{ flex: 1 }}>
         <Container>
             <Header>
                 <Title>Resumo por categoria</Title>
@@ -113,19 +124,19 @@ export function Resume(){
                     paddingBottom: useBottomTabBarHeight()  
                 }}
             >
+                
                 <MonthSelect>
-                    <MonthSelectButton>
+                    <MonthSelectButton onPress={() => handleDateChange('prev')}>
                         <MonthSelectIcon name="chevron-left"/>
                     </MonthSelectButton>
 
                     <Month>Junho</Month>
 
-                    <MonthSelectButton>
+                    <MonthSelectButton onPress={() => handleDateChange('next')}>
                         <MonthSelectIcon name="chevron-right"/>
                     </MonthSelectButton>
 
                 </MonthSelect>
-
 
                 <ChartContainer>
                 <VictoryPie
@@ -155,5 +166,6 @@ export function Resume(){
             }
             </Content>
         </Container>
+        </GestureHandlerRootView>
     )
 }
