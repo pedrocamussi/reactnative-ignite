@@ -24,8 +24,10 @@ import {
   Period,
   Price,
   About,
-  Acessories
+  Acessories,
+  Footer
 } from './styles';
+import { Button } from '../../components/Button';
 
 
 export function CarDetails(){
@@ -52,22 +54,24 @@ export function CarDetails(){
           </Rent>
         </Details>
 
-      <Acessories>
-        <Acessory name="380Km/h" icon={speedSvg}/>
-        <Acessory name="3.2s" icon={accelerationSvg}/>
-        <Acessory name="800 HP" icon={forceSvg}/>
-        <Acessory name="Gasoline" icon={gasolineSvg}/>
-        <Acessory name="Auto" icon={exchangeSvg}/>
-        <Acessory name="2 pessoas" icon={peopleSvg}/>
-      </Acessories>
+        <Acessories>
+          <Acessory name="380Km/h" icon={speedSvg}/>
+          <Acessory name="3.2s" icon={accelerationSvg}/>
+          <Acessory name="800 HP" icon={forceSvg}/>
+          <Acessory name="Gasoline" icon={gasolineSvg}/>
+          <Acessory name="Auto" icon={exchangeSvg}/>
+          <Acessory name="2 pessoas" icon={peopleSvg}/>
+        </Acessories>
 
-      <About>
-        Este é um automóvel desportivo. Surgiu do lendário
-        touro de lide indultado na praça Real Maestranza de Sevilla.
-        É um belíssimo carro para quem gosta de acelerar.
-      </About>
+        <About>
+          Este é um automóvel desportivo. Surgiu do lendário
+          touro de lide indultado na praça Real Maestranza de Sevilla.
+          É um belíssimo carro para quem gosta de acelerar.
+        </About>
       </Content>
-      
+      <Footer>
+        <Button title="Confirmar"/>
+      </Footer>
     </Container>
     );
 }
