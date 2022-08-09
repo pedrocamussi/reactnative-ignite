@@ -2,6 +2,7 @@ import React from 'react';
 import { StatusBar } from 'react-native';
 import {useTheme} from 'styled-components';
 
+import { Calendar } from '../../components/Calendar';
 import { BackButton } from '../../components/BackButton';
 import { Button } from '../../components/Button';
 
@@ -17,8 +18,6 @@ import {
   Content,
   Footer
 } from './styles';
-
-
 
 
 export function Scheduling(){
@@ -54,6 +53,7 @@ export function Scheduling(){
             </RentalPeriod>
         </Header>
         <Content>
+            <Calendar/>
 
         </Content>
         <Footer>
