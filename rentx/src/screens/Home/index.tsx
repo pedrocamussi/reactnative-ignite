@@ -23,25 +23,23 @@ export function Home(){
   const [load, setLoad] = useState(true);
   const navigation = useNavigation();
 
-  function handleCarDetails() {
-    navigation.navigate('CarDetails')
+  function handleCarDetails(car: CarDTO) {
+    navigation.navigate('CarDetails', {car})
   }
 
   async function getCars(){
     const response = await api.get('/cars');
-    console.log(response.data);
+    console.log('hello');
   }
-
-  getCars
 
   useEffect(() => {
     async function fetchCars(){
       try {
         const response = await api.get('/cars');
         setCars(response.data);
-        console.log(response.data);
-      } catch (error) {
-        console.log(error);
+        console.log('response.data');
+      } catch (e) {
+        console.log(e);
       }finally{
         setLoad(false);
       }
@@ -70,7 +68,7 @@ export function Home(){
       <CarList
         data={cars}
         keyExtractor={item => String(item.id)}
-        renderItem={({item}) => <Car data={item} onPress={handleCarDetails}/>} 
+        renderItem={({item}) => <Car data={item} onPress={() => handleCarDetails(item)}/>} 
       />
     </Container>
     );
