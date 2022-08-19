@@ -25,6 +25,10 @@ import {
 export function Scheduling(){
     const navigation = useNavigation();
 
+    function handleBack(){
+        navigation.goBack();
+      }
+
     function handleConfirmRental(){
       navigation.navigate('SchedulingDetails');
     }  
@@ -38,7 +42,7 @@ export function Scheduling(){
                 backgroundColor="transparent"
                 />
             <BackButton 
-            onPress={() => {}} 
+            onPress={handleBack} 
             color={theme.colors.shape}
             
             />
