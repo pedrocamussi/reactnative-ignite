@@ -24,10 +24,10 @@ interface MarkedDateProps{
 
 interface CalendarProps {
     markedDates: MarkedDateProps;
-    onDayPress: 
+    onDayPress: DateCallbackHandler;
 }
 
-export function Calendar(){
+export function Calendar({markedDates, onDayPress}: CalendarProps){
     const theme = useTheme();
     return(
     <CustomCalendar
