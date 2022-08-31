@@ -1,6 +1,7 @@
 import React from 'react';
 import {Feather} from '@expo/vector-icons';
 import { useTheme } from 'styled-components';
+import { generateInterval } from './generateInterval';
 
 import {
     Calendar as CustomCalendar,
@@ -27,7 +28,15 @@ interface CalendarProps {
     onDayPress: DateCallbackHandler;
 }
 
-export function Calendar({markedDates, onDayPress}: CalendarProps){
+interface DayProps{
+    dateString: string;
+    day: number;
+    month: number;
+    year: number;
+    timestamp: number;
+}
+
+function Calendar({markedDates, onDayPress}: CalendarProps){
     const theme = useTheme();
     return(
     <CustomCalendar
@@ -61,7 +70,12 @@ export function Calendar({markedDates, onDayPress}: CalendarProps){
         firstDay={1}
         minDate={String(new Date())}
         markingType="period"
-        markedDates={}
+        markedDates={markedDates}
+        onDayLongPress={onDayPress}
     />
     );
+}
+
+export {
+    Calendar, MarkedDateProps, DayProps, generateInterval
 }
