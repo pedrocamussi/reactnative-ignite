@@ -34,13 +34,14 @@ export function Scheduling(){
       }
     
       function handleChangeDates(date: DayProps){
-        let start =  !lastSelectedDate.timestamp ? date : lastSelectedDate;
+        let start = !lastSelectedDate.timestamp ? date : lastSelectedDate;
         let end = date;
 
         if(start.timestamp > end.timestamp){
             start = end;
             end = start;
         }
+
         setLastSelectedDate(end);
         const interval = generateInterval(start, end);
         setMarkedDates(interval);
