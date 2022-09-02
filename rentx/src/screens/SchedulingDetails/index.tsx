@@ -1,21 +1,15 @@
 import React from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import {Feather} from '@expo/vector-icons'
 
 import {useTheme} from 'styled-components';
 import { BackButton } from '../../components/BackButton';
 import {ImageSlider} from '../../components/ImageSlider';
-import { Acessory } from '../../components/Acessory';
+import { Accessory } from '../../components/Accessory';
 import { RFValue } from 'react-native-responsive-fontsize';
-
-
-import speedSvg from '../../assets/speed.svg';
-import accelerationSvg from '../../assets/acceleration.svg';
-import forceSvg from '../../assets/force.svg';
-import gasolineSvg from '../../assets/gasoline.svg';
-import exchangeSvg from '../../assets/exchange.svg';
-import peopleSvg from '../../assets/people.svg';
-
+import { Button } from '../../components/Button';
+import { CarDTO } from '../../dtos/CarDTO';
+import {getAccessoryIcon} from '../../utils/getAccessoryIcon';
 import {
   Container,
   Header, 
@@ -28,7 +22,7 @@ import {
   Rent,
   Period,
   Price,
-  Acessories,
+  Accessories,
   Footer,
   RentalPeriod,
   CalendarIcon,
@@ -41,22 +35,28 @@ import {
   RentalPriceQuota,
   RentalPriceTotal
 } from './styles';
-import { Button } from '../../components/Button';
 
+interface Params{
+  car: CarDTO;
+}
 
 export function SchedulingDetails(){
   const theme = useTheme();
-  
   const navigation = useNavigation();
+  const route = useRoute();
+  const {car} = route.params as Params;
 
   function handleConfirmRental(){
     navigation.navigate('SchedulingComplete');
   }  
-  
+  function handleBack(){
+    navigation.goBack();
+  }
+
   return(
     <Container>
       <Header>
-        <BackButton onPress={() => {}} />
+        <BackButton onPress={handleBack} />
       </Header>
 
       <CarImages>
@@ -75,14 +75,16 @@ export function SchedulingDetails(){
             <Price>R$ 580</Price>
           </Rent>
         </Details>
-        <Acessories>
-          <Acessory name="380Km/h" icon={speedSvg}/>
-          <Acessory name="3.2s" icon={accelerationSvg}/>
-          <Acessory name="800 HP" icon={forceSvg}/>
-          <Acessory name="Gasoline" icon={gasolineSvg}/>
-          <Acessory name="Auto" icon={exchangeSvg}/>
-          <Acessory name="2 pessoas" icon={peopleSvg}/>
-        </Acessories>
+        <Accessories>
+          {
+            car.accessories.map(accessory =>  (
+              <Accessory 
+                key={accessory.type}
+                name={accessory.name}
+                icon={getAccessoryIcon(accessory.type)}/>
+            ))
+          }
+        </Accessories>
         <RentalPeriod>
           <CalendarIcon>
             <Feather
