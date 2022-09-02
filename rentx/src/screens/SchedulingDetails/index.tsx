@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import {Feather} from '@expo/vector-icons'
+import { api } from '../../services/api';
 
 import {useTheme} from 'styled-components';
 import { BackButton } from '../../components/BackButton';
@@ -35,23 +36,56 @@ import {
   RentalPriceQuota,
   RentalPriceTotal
 } from './styles';
+import { getPlataformDate } from '../../utils/getPlataformDate';
+import { format } from 'date-fns';
+import { Alert } from 'react-native';
 
 interface Params{
   car: CarDTO;
+  dates: string[];
+}
+
+interface RentalPeriod{
+  start: string;
+  end: string;
 }
 
 export function SchedulingDetails(){
+  const [rentalPeriod, setRentalPeriod] = useState<RentalPeriod>({} as RentalPeriod);
   const theme = useTheme();
   const navigation = useNavigation();
   const route = useRoute();
-  const {car} = route.params as Params;
+  const {car, dates} = route.params as Params;
 
-  function handleConfirmRental(){
-    navigation.navigate('SchedulingComplete');
+  const rentTotal = Number(dates.length * car.rent.price);
+
+  async function handleConfirmRental(){
+    const schedulesByCar = await api.get(`/schedules_bycars/${car.id}`);
+
+    const unavailable_dates = [
+      ...schedulesByCar.data.unavailable_dates,
+      ...dates
+    ];
+
+    api.put(`/schedules_bycars/${car.id}`, {
+      id: car.id,
+      unavailable_dates
+    })
+    .then(() => navigation.navigate('SchedulingComplete'))
+    .catch(() => Alert.alert('Não foi possível realizar o agendamento.'))
   }  
+
+
   function handleBack(){
     navigation.goBack();
   }
+
+  useEffect(() => {
+    setRentalPeriod({
+      start: format(getPlataformDate(new Date(dates[0])), 'dd/MM/yyyy'),
+      end: format(getPlataformDate(new Date(dates[dates.length -1])), 'dd/MM/yyyy'),
+    })
+  }, []);
 
   return(
     <Container>
@@ -60,19 +94,19 @@ export function SchedulingDetails(){
       </Header>
 
       <CarImages>
-        <ImageSlider imagesUrl={['https://freepngimg.com/thumb/audi/35227-5-audi-rs5-red.png']}
+        <ImageSlider imagesUrl={car.photos}
         />
       </CarImages>
 
       <Content>
         <Details>
           <Description>
-            <Brand>Lamborghini</Brand>
-            <Name>Hurracan</Name>
+            <Brand>{car.brand}</Brand>
+            <Name>{car.name}</Name>
           </Description>
           <Rent>
-            <Period>Ao dia</Period>
-            <Price>R$ 580</Price>
+            <Period>{car.rent.period}</Period>
+            <Price>R$ {car.rent.price}</Price>
           </Rent>
         </Details>
         <Accessories>
@@ -95,7 +129,7 @@ export function SchedulingDetails(){
           </CalendarIcon>
           <DateInfo>
             <DateTitle>DE</DateTitle>
-            <DateValue>18/06/2021</DateValue>
+            <DateValue>{rentalPeriod.start}</DateValue>
           </DateInfo>
           <Feather
             name="chevron-right"
@@ -103,15 +137,15 @@ export function SchedulingDetails(){
             color={theme.colors.text}
           />
           <DateInfo>
-            <DateTitle>DE</DateTitle>
-            <DateValue>18/06/2021</DateValue>
+            <DateTitle>ATÉ</DateTitle>
+            <DateValue>{rentalPeriod.end}</DateValue>
           </DateInfo>
         </RentalPeriod>
         <RentalPrice>
           <RentalPriceLabel>TOTAL</RentalPriceLabel>
           <RentalPriceDetails>
-            <RentalPriceQuota>R$ 580 x3 diárias</RentalPriceQuota>
-            <RentalPriceTotal>R$ 2.900</RentalPriceTotal>
+            <RentalPriceQuota>{`R$ ${car.rent.price} x${dates.length} diárias`}</RentalPriceQuota>
+            <RentalPriceTotal>R$ {rentTotal}</RentalPriceTotal>
           </RentalPriceDetails>
         </RentalPrice>
       </Content>
